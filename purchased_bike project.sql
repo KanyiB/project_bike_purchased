@@ -1,183 +1,141 @@
-SELECT * FROM bike_purchases.`bike purchase db`;
-Select Marital_status,gender,income,education,occupation, home_owner,cars,commute_distance,region,age,purchased_bike
+-- Data cleaning and manipulation
+SELECT distinct * FROM bike_purchases.`bike purchase db`;
+SELECT Marital_status, Gender, Income, Children, Education, Occupation, Home_Owner, Cars, Commute_Distance, Region, Age, Purchased_Bike
 FROM bike_purchases.`bike purchase db`;
--- Filtering by income asc
-Select Marital_status,gender,income,education,occupation, home_owner,cars,commute_distance,region,age,purchased_bike
+-- Find which gender purchased a bike
+-- From the finding the male are the ones buying the bikes
+SELECT 
+gender, count(Purchased_Bike) as Total_gender_purchase
+ FROM bike_purchases.`bike purchase db`
+ GROUP BY Gender,Purchased_Bike
+ ORDER BY Gender,Purchased_Bike;
+ 
+ -- Lets look at marital status
+ -- It seems like more single women are the one likely to purchase the bikes
+ -- Also Married men are the one buying more bikes than single men
+ SELECT 
+gender, count(Purchased_Bike) as Total_gender_purchase, Marital_Status
 FROM bike_purchases.`bike purchase db`
-order by INCOME
--- Filter by Marital_Status
-Select Marital_status,gender,income,education,occupation, home_owner,cars,commute_distance,region,age,purchased_bike
+WHERE Purchased_Bike = 'YES'
+GROUP BY Gender,Purchased_Bike,Marital_Status
+ORDER BY Gender,Purchased_Bike, Marital_Status;
+
+-- Lets look at income
+-- The finding is that only the people between 10,000 and 50,000 bought bikes
+SELECT 
+gender, count(Purchased_Bike) as Total_gender_purchase, Marital_Status,
+	CASE
+		when income <= 50000 then 'Lower_income'
+		when income <= 90000 then 'lower_middle_income'
+		when income <= 130000 then 'upper_middle_income'
+		when income <= 170000 then 'high_income'
+	else 'upper_high_income'
+end as income_bracket
 FROM bike_purchases.`bike purchase db`
-order by Marital_status;
--- filter by gender
-Select Marital_status,gender,income,education,occupation, home_owner,cars,commute_distance,region,age,purchased_bike
+WHERE Purchased_Bike = 'YES'
+GROUP BY Gender,Marital_Status,income_bracket
+ORDER BY Gender, Marital_Status, total_gender_purchase,income_bracket;
+
+-- Lets know their occupation 
+-- It shows that they are all in the occupations from manual,management,Clerical,skilled manual,professional
+-- Both male and female the professional occupation  did buy more bikes for both category married or single
+
+SELECT 
+gender, count(Purchased_Bike) as Total_gender_purchase, Marital_Status,
+	CASE
+		when income <= 50000 then 'Lower_income'
+		when income <= 90000 then 'lower_middle_income'
+		when income <= 130000 then 'upper_middle_income'
+		when income <= 170000 then 'high_income'
+	else 'upper_high_income'
+end as income_bracket,
+Occupation
 FROM bike_purchases.`bike purchase db`
-order by gender;
--- filter by education
-Select Marital_status,gender,income,education,occupation, home_owner,cars,commute_distance,region,age,purchased_bike
+WHERE Purchased_Bike = 'YES'
+and income <= 50000
+GROUP BY Gender,Marital_Status,income_bracket,Occupation
+ORDER BY Gender, Marital_Status, total_gender_purchase,income_bracket;
+
+-- Education
+-- In Bachelors it was the highest in all the skilled Occupations
+
+SELECT 
+gender, count(Purchased_Bike) as Total_gender_purchase, Marital_Status,
+	CASE
+		when income <= 50000 then 'Lower_income'
+		when income <= 90000 then 'lower_middle_income'
+		when income <= 130000 then 'upper_middle_income'
+		when income <= 170000 then 'high_income'
+	else 'upper_high_income'
+end as income_bracket,
+Occupation, Education
 FROM bike_purchases.`bike purchase db`
-order by education;
--- filter the number of married female  that live in Europe 
+WHERE Purchased_Bike = 'YES'
+and income <= 50000
+GROUP BY Gender,Marital_Status,income_bracket, Education,Occupation
+ORDER BY Gender, Marital_Status, total_gender_purchase,income_bracket,Education;
 
-Select Marital_status,gender,income,education,occupation, home_owner,cars,commute_distance,region,age,purchased_bike
+-- Cars
+-- It shows that we should forcus on the people who have 0 to 2 cars in both gender
+
+SELECT 
+gender, count(Purchased_Bike) as Total_gender_purchase, Marital_Status,
+	CASE
+		when income <= 50000 then 'Lower_income'
+		when income <= 90000 then 'lower_middle_income'
+		when income <= 130000 then 'upper_middle_income'
+		when income <= 170000 then 'high_income'
+	else 'upper_high_income'
+end as income_bracket, Cars
 FROM bike_purchases.`bike purchase db`
-where Marital_status = 'M'
-and Gender = 'F'
-and region = 'Europe'
+WHERE Purchased_Bike = 'YES'
+and income <= 50000
+GROUP BY Gender,Marital_Status,income_bracket, Cars
+ORDER BY Gender, Marital_Status, total_gender_purchase,income_bracket,Cars;
 
--- filter the number of married female with a graduate degree that live in Europe 
-
-Select Marital_status,gender,income,education,occupation, home_owner,cars,commute_distance,region,age,purchased_bike
-FROM bike_purchases.`bike purchase db`
-where Marital_status = 'M'
-and Gender = 'F'
-and education = 'graduate degree'
-and region = 'Europe'
-order by income
-
--- filter the number of married female  that live in Europe with a degree that bought a bike between 25 years to 50 years
-Select Marital_status,gender,income,education,occupation, home_owner,cars,commute_distance,region,age,purchased_bike
-FROM bike_purchases.`bike purchase db`
-where Marital_status = 'M'
-and Gender = 'F'
-and region = 'Europe'
-and age = '>=25 to <50'
-and purchased_bike = 'yes'
-
--- filter the number of married female  that live in North america with a degree that bought a bike between 25 years to 50 years
-Select Marital_status,gender,income,education,occupation, home_owner,cars,commute_distance,region,age,purchased_bike
-FROM bike_purchases.`bike purchase db`
-where Marital_status = 'M'
-and Gender = 'F'
-and region = 'North America'
-and age = '>=25 to <50'
-and purchased_bike = 'yes'
--- The above but a male version
-Select Marital_status,gender,income,education,occupation, home_owner,cars,commute_distance,region,age,purchased_bike
-FROM bike_purchases.`bike purchase db`
-where Marital_status = 'M'
-and Gender = 'm'
-and region = 'North America'
-and age = '>=25 to <50'
-and purchased_bike = 'yes'
-
--- The number of females that bought bikes and had no car
-select count(gender),purchased_bike 
-from bike_purchases.`bike purchase db`
-where purchased_bike = 'yes'
-and gender = 'f'
-and cars ='0'
-group by gender
-
--- Find a man who has high income, has a car, graduated, in management,age between 35 to 50 that bought a bike
-select marital_status, gender, max(income),cars,education,age,purchased_bike
-from bike_purchases.`bike purchase db`
-where marital_status =' m'
-and gender ='m'
-and cars ='>1'
-and age = '>=35 <=50'
-and education = 'graduated degree'
-and occupation = ' management'
-and purchased_bike = 'yes'
--- Lets check on the correlation 
--- 1. If the level of education has effect on the purchasing power of bikes for different genders
-Select gender,education,count(purchased_bike) as purchased_bike_count
-from bike_purchases.`bike purchase db`
-where purchased_bike = 'yes'
-Group by gender, education, purchased_bike
-having purchased_bike = 'yes'
-order by gender, education
-
--- 2. If the level of education has effect on the purchasing power of bikes 
-Select education,count(purchased_bike) as purchased_bike_count
-from bike_purchases.`bike purchase db`
-where purchased_bike = 'yes'
-Group by  education, purchased_bike
-having purchased_bike = 'yes'
-order by  education
-
--- 3 The number of cars 
-Select cars as no_cars,count(purchased_bike) as purchased_bike_count
-from bike_purchases.`bike purchase db`
-where purchased_bike = 'yes' 
-and cars>'1'
-group by cars
-order by cars asc
-
--- 4. According to the region
-Select region,count(purchased_bike) as purchased_bike_count
-from bike_purchases.`bike purchase db`
-where purchased_bike = 'yes' 
-group by region
-order by purchased_bike_count asc
-
--- 5. According to AGE (youth)
-Select 
-case
-when age >= 25 <35 then 'youth'
-when age >= 35 <60 then 'adult'
-when age >= 60 <75 then 'old'
-else 'too old'
-end as age_brackets
-,count(purchased_bike)as purchased_bike_count
-from bike_purchases.`bike purchase db`
-where purchased_bike = 'yes' 
-and age  between 25 and 100
-group by age_brackets
-order by age_brackets asc
 -- Commute_Distance
-Select
-Case
-when 'commute_distance' = '0-1 miles' then 'near'
-when 'commute_distance' = '1-2 miles' then 'a bit far'
-when 'commute_distance' = '2-5 miles' then 'far' 
-when 'commute_distance' = '5-10 miles' then 'farther'
-else 'farthest' 
-end as  commute_distance_range,
-age, gender, count(purchased_bike) AS count_purchased_bike
-from bike_purchases.`bike purchase db`
-where purchased_bike = 'yes'
-and age <35
-group by commute_distance_range, gender, age 
-order by commute_distance_range;
--- Adult
-Select 
+-- Those people that had to commute 0- 1 miles are the one that bought bikes more
+SELECT 
+distinct gender, count(Purchased_Bike) as Total_gender_purchase,   Commute_distance 
+FROM bike_purchases.`bike purchase db`
+WHERE Purchased_Bike = 'YES'
+and cars <=2
+GROUP BY Gender,Commute_Distance
+ORDER BY Gender, total_gender_purchase, Commute_Distance;
+
+-- Region that we should forcus
+-- North America is leading followed by Europe and then Pacific
+SELECT 
+distinct gender, count(Purchased_Bike) as Total_gender_purchase,region
+FROM bike_purchases.`bike purchase db`
+WHERE Purchased_Bike = 'YES'
+and cars <=2
+GROUP BY Gender,region
+ORDER BY Gender, total_gender_purchase, region;
+
+-- Age
+-- Both male and female  in the millenial age group are the one who purchased the bikes more then genx
+SELECT distinct(gender),count(Purchased_Bike) total_gender_purchase,
 case
-when age >= 35 <60 then 'adult'
-when age >= 25 <35 then 'youth'
-when age >= 60 <75 then 'old'
-else 'too old'
-end as age_brackets
-,count(purchased_bike)as purchased_bike_count
-from bike_purchases.`bike purchase db`
-where purchased_bike = 'yes' 
-and age  between 25 and 100
-group by age_brackets
-order by age_brackets asc
--- old
-Select 
-case
-when age >= 60 <75 then 'old'
-when age >= 25 <35 then 'youth'
-when age >= 35 <60 then 'adult'
-else 'too old'
-end as age_brackets
-,count(purchased_bike)as purchased_bike_count
-from bike_purchases.`bike purchase db`
-where purchased_bike = 'yes' 
-and age  between 25 and 100
-group by age_brackets
-order by age_brackets asc
+when age between 25 and 30 then 'genz'
+when age between 31 and 45 then  'millenial'
+when age between 46 and 60 then  'genx'
+when age between 61 and 75 then  'boomers II '
+ELSE 'boomers I'
+end as age_generation
+FROM bike_purchases.`bike purchase db`
+WHERE Purchased_Bike = 'YES'
+GROUP BY Gender,Age
+ORDER BY Gender,total_gender_purchase, Age_generation;
 
--- Find the MAX and Min INCOME
-SELECT max(INCOME) AS max_income FROM  bike_purchases.`bike purchase db`
-SELECT min(INCOME) AS min_income FROM  bike_purchases.`bike purchase db`
+-- Children 
+-- The lesser the children they high chances of buying a bike
+SELECT distinct(gender),count(Purchased_Bike) total_gender_purchase,children
+FROM bike_purchases.`bike purchase db`
+WHERE Purchased_Bike = 'YES'
+GROUP BY Gender,Children
+ORDER BY Gender,total_gender_purchase, Children
 
--- Highest income depending on the level of education and occupation
 
-Select education,occupation,
-max(income)over (partition by education) as max_slary
-from bike_purchases.`bike purchase db`
-Select education,occupation,
-max(income)over (partition by occupation) as max_slary
-from bike_purchases.`bike purchase db`
+
+ 
